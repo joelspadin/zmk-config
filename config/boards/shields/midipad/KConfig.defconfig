@@ -1,0 +1,6 @@
+if SHIELD_MIDIPAD
+
+config ZMK_KEYBOARD_NAME
+    default "Midipad"
+
+endif
