@@ -1,0 +1,5 @@
+# This file generates the GitHub Actions matrix.
+---
+include:
+  - board: nrf5340_nrf5340dk_cpuapp
+    shield: zmk_uno
