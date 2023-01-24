@@ -3,4 +3,4 @@
 include:
   - board: numble
   - board: nrf5340dk_nrf5340_cpuapp
-    shield: zmk_uno
+    shield: zmk_uno ssd1306_128x32
