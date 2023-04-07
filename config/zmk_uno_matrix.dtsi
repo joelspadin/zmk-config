@@ -1,0 +1,34 @@
+
+#include <dt-bindings/zmk/matrix_transform.h>
+
+// Add the DK's four push buttons to the matrix
+/ {
+    kscan_buttons: kscan_buttons {
+        compatible = "zmk,kscan-gpio-direct";
+
+        input-gpios
+			= <&gpio0 23 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>
+			, <&gpio0 24 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>
+			, <&gpio0 8 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>
+			, <&gpio0 9 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>
+			;
+    };
+};
+
+&kscan_matrix_comp {
+    buttons {
+        kscan = <&kscan_buttons>;
+        row-offset = <3>;
+    };
+};
+
+&matrix_transform {
+    rows = <3>;
+    columns = <4>;
+
+    map = <
+        RC(0,0) RC(0,1)             RC(3,0) RC(3,1)
+        RC(1,0) RC(1,1)             RC(3,2) RC(3,3)
+        RC(2,0) RC(2,1) RC(2,2)
+    >;
+};
