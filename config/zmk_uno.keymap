@@ -15,66 +15,130 @@
 #include "zmk_uno_matrix.dtsi"
 // #include "zmk_uno_direct.dtsi"
 
+#define A_MACRON 0x101 0x100
+
+// uni: &uni_wincompose {
+//     compose-key = <K_MENU>;
+// };
+// uni: &mt {};
+
 / {
-    macros {
-        ZMK_MACRO(ble_zero,
-            wait-ms = <1>;
-            tap-ms = <1>;
-            bindings = <&out OUT_BLE &bt BT_SEL 0>;
-        )
-        ZMK_MACRO(ble_one,
-            wait-ms = <1>;
-            tap-ms = <1>;
-            bindings = <&out OUT_BLE &bt BT_SEL 1>;
-        )
+    // chosen {
+    //     zmk,character_map = &charmap_us;
+    // };
+
+    behaviors {
+        // ZMK_SEND_STRING(hello_world, "Hello, world!")
+
+        digits: digits {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <300>;
+            bindings = <&kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &kp N6 &kp N7 &kp N8 &kp N9>;
+        };
+
+        enter_bksp: enter_bksp {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&kp ENTER &kp BKSP>;
+        };
+
+        caps_prog_word: caps_prog_word {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <300>;
+            bindings = <&kp_caps LSHIFT 0 &prog_word>;
+        };
 
         kp_caps: kp_caps {
             compatible = "zmk,behavior-hold-tap";
-            label = "KP_CAPS";
             #binding-cells = <2>;
             tapping-term-ms = <200>;
             bindings = <&kp>, <&caps_word>;
+        };
+
+        to_to: to_to {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            bindings = <&to>, <&to>;
+        };
+    };
+
+    // bootloader_key {
+    //     compatible = "zmk,startup-bootloader-key";
+    // };
+
+    macros {
+        ble_zero: ble_zero {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <1>;
+            tap-ms = <1>;
+            bindings = <&out OUT_BLE &bt BT_SEL 0>;
+        };
+
+        ble_one: ble_one {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <1>;
+            tap-ms = <1>;
+            bindings = <&out OUT_BLE &bt BT_SEL 1>;
         };
     };
 
     keymap {
         compatible = "zmk,keymap";
 
-        layer_1 {
-            label = "base";
+        base {
+            display-name = "base";
             bindings = <
-                &kp A     &kp B     &to 0 &to 1
-                &kp SPACE &kp DOT   &to 2 &to 3
+                &kp A     &enter_bksp       &to_to 1 0 &to 2
+                &kp SPACE &kp ESC           &to 3      &to 4
 
-                /* &out OUT_USB &ble_zero &ble_one */
                 &none &none &none
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
         };
 
-        layer_2 {
-            label = "shift";
+        shift {
+            display-name = "shift";
             bindings = <
-                &kp A            &kp MINUS  &trans &trans
-                &kp_caps LSHFT 0 &trans     &trans &trans
+                &kp A     &caps_prog_word   &trans &trans
+                &kp MINUS &trans            &trans &trans
 
                 &trans &trans &trans
             >;
         };
 
-        layer_3 {
-            label = "lighting";
+
+        keypad {
+            display-name = "keypad";
             bindings = <
-                &ext_power EP_TOG &trans    &trans &trans
+                &digits   &enter_bksp       &trans &trans
+                &kp N0    &kp ESC           &trans &trans
+
+                &none &none &none
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+        };
+
+        lighting {
+            display-name = "lighting";
+            bindings = <
+                &rgb_ug RGB_TOG   &trans    &trans &trans
                 &bl BL_TOG        &trans    &trans &trans
 
                 &trans &trans &trans
             >;
         };
 
-        layer_4 {
+        system {
             label = "system";
+            display-name = "system";
             bindings = <
                 &ble_zero    &ble_one       &trans &trans
                 &out OUT_USB &bt BT_CLR     &trans &trans
@@ -83,10 +147,14 @@
             >;
         };
     };
+
+    sensors {
+        triggers-per-rotation = <36>;
+    };
 };
 
 &encoder {
-    resolution = <2>;
-	a-gpios = <&arduino_header 15 GPIO_PULL_UP>;
-    b-gpios = <&arduino_header 14 GPIO_PULL_UP>;
+    steps = <36>;
+	// a-gpios = <&arduino_header 15 GPIO_PULL_UP>;
+    // b-gpios = <&arduino_header 14 GPIO_PULL_UP>;
 };
