@@ -44,6 +44,13 @@
             bindings = <&kp ENTER &kp BKSP>;
         };
 
+        // TODO: remove this for caps word PR
+        prog_word: prog_word {
+            compatible = "zmk,behavior-caps-word";
+            #binding-cells = <0>;
+            continue-list = <UNDERSCORE MINUS BACKSPACE DELETE>;
+        };
+
         caps_prog_word: caps_prog_word {
             compatible = "zmk,behavior-tap-dance";
             #binding-cells = <0>;
